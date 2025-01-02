@@ -8,5 +8,7 @@ connectDatabase();
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () =>
-  console.log(`QR code server is listening at port ${PORT}`)
+  console.log(
+    `QR code server is listening at port in  ${PORT} in ${process.env.NODE_ENV} mode`
+  )
 );

@@ -7,10 +7,18 @@ import visitorRoutes from "./routes/Visitor.js";
 import campaignRoutes from "./routes/Campaign.js";
 import reportRoutes from "./routes/Report.js";
 import smtpSettingRoutes from "./routes/SmtpSettings.js";
+import cors from "cors";
 export const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 //mount routes
 app.use("/api/v1/auth", userRoutes);

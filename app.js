@@ -7,6 +7,7 @@ import visitorRoutes from "./routes/Visitor.js";
 import campaignRoutes from "./routes/Campaign.js";
 import reportRoutes from "./routes/Report.js";
 import smtpSettingRoutes from "./routes/SmtpSettings.js";
+import emailSettingRoutes from "./routes/EmailSettings.js";
 import cors from "cors";
 export const app = express();
 
@@ -14,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: [process.env.FRONTEND_URL, "http://localhost"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -26,6 +27,7 @@ app.use("/api/v1/visitor", visitorRoutes);
 app.use("/api/v1/campaign", campaignRoutes);
 app.use("/api/v1/reports", reportRoutes);
 app.use("/api/v1/settings", smtpSettingRoutes);
+app.use("/api/v1/emailSettings", emailSettingRoutes);
 
 app.get("/", (req, res) => {
   return res.json({

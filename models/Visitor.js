@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Counter from "./Counter.js";
 
 const visitorSchema = new mongoose.Schema(
   {
@@ -21,6 +22,7 @@ const visitorSchema = new mongoose.Schema(
       type: String,
       trim: true,
       match: [/^\d{10}$/, "Please provide a valid 10-digit mobile number."],
+      required: true,
     },
     details: {
       type: String,
@@ -55,11 +57,30 @@ const visitorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    serial: {
+      type: Number,
+      unique: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+visitorSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    try {
+      const counter = await Counter.findOneAndUpdate(
+        { name: "visitorSerial" },
+        { $inc: { value: 1 } },
+        { new: true, upsert: true }
+      );
+      this.serial = counter.value;
+    } catch (error) {
+      next(error);
+    }
+  }
+  next();
+});
 
 const Visitor = mongoose.model("Visitor", visitorSchema);
 export default Visitor;

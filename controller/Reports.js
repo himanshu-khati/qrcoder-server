@@ -9,8 +9,11 @@ const __dirname = path.dirname(__filename);
 
 export const generateVisitorReport = async (req, res) => {
   try {
-    const { status } = req.query;
-    let filter = { user: req.user._id };
+    const { status, campaignId } = req.query;
+    if (!campaignId) {
+      return next(new ErrorHandler("Campaign ID is required.", 400));
+    }
+    let filter = { campaign: campaignId, user: req.user._id };
     if (status === "checked-in") {
       filter.checkedIn = true;
     } else if (status === "pending") {
@@ -27,7 +30,7 @@ export const generateVisitorReport = async (req, res) => {
       visitorName: visitor.visitorName,
       email: visitor.email,
       description: visitor.details,
-      checkInTime: visitor?.checkedInAt
+      checkInTime: visitor.checkedInAt
         ? visitor?.checkedInAt.toISOString()
         : "N/A",
       checkInStatus: visitor.checkedIn ? "Checked In" : "Pending",

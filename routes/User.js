@@ -23,5 +23,13 @@ router.get("/logout", logout);
 router.get("/myProfile", isAuthenticated, myProfile);
 router.post("/reset-password-token", resetPasswordToken);
 router.post("/reset-password", resetPassword);
+router.get("/checkAuth", isAuthenticated, (req, res) => {
+  res
+    .status(200)
+    .json({
+      success: true,
+      user: { id: req.user._id, name: req.user.firstName },
+    });
+});
 
 export default router;

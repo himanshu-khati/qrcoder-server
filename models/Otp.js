@@ -24,9 +24,7 @@ const sendVerificationEmail = async (email, otp) => {
       "verification email from QRcoder app",
       otp
     );
-    console.log("email sent successfully");
   } catch (error) {
-    console.log(`error occured while sending email: ${error}`);
     throw error;
   }
 };
@@ -34,10 +32,8 @@ const sendVerificationEmail = async (email, otp) => {
 otpSchema.pre("save", async function (next) {
   try {
     await sendVerificationEmail(this.email, this.otp);
-    console.log("Email sent successfully");
     next();
   } catch (error) {
-    console.log(`Error occurred while sending email: ${error}`);
     next(error);
   }
 });

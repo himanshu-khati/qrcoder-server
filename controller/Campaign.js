@@ -40,7 +40,18 @@ export const createCampaign = async (req, res, next) => {
 // Get All Campaigns for Authenticated User
 export const getCampaigns = async (req, res, next) => {
   try {
-    const campaigns = await Campaign.find({ user: req.user._id });
+    const { page = 1, limit = 10 } = req.query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const query = { user: req.user._id };
+
+    const totalCampaigns = await Campaign.countDocuments(query);
+
+    const campaigns = await Campaign.find(query)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .sort({ createdAt: -1 });
+
     if (!campaigns) {
       return next(
         new ErrorHandler(`campaign not found: ${error.message}`, 401)
@@ -49,6 +60,12 @@ export const getCampaigns = async (req, res, next) => {
     res.status(200).json({
       success: true,
       campaigns,
+      pagination: {
+        totalItems: totalCampaigns,
+        totalPages: Math.ceil(totalCampaigns / limitNumber),
+        currentPage: pageNumber,
+        pageSize: limitNumber,
+      },
     });
   } catch (error) {
     return next(

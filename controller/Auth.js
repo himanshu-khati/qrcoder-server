@@ -32,7 +32,6 @@ export const sendOtp = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `otp sent succesfully`,
-      otp,
     });
   } catch (error) {
     return next(new ErrorHandler(`error sending otp: ${error.message} `, 501));
@@ -59,7 +58,6 @@ export const register = async (req, res, next) => {
     const recentOtp = await Otp.find({ email })
       .sort({ createdAt: -1 })
       .limit(1);
-    console.log("recentotp:", recentOtp);
 
     // validate otp
     if (recentOtp.length === 0) {
@@ -122,8 +120,8 @@ export const logout = async (req, res, next) => {
   try {
     res
       .status(200)
-      .cookie("token", "", {
-        expires: new Date(Date.now()),
+      .clearCookie("token", "", {
+        expires: new Date(0),
         sameSite: process.env.NODE_ENV === "Develpoment" ? "lax" : "none",
         secure: process.env.NODE_ENV === "Develpoment" ? false : true,
       })

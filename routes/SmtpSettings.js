@@ -1,7 +1,11 @@
 import express from "express";
-import { saveSmtpSettings } from "../controller/SmtpSettings.js";
+import {
+  saveSmtpSettings,
+  getSmtpSettings,
+} from "../controller/SmtpSettings.js";
 const router = express.Router();
 import { isAuthenticated } from "../middlewares/auth.js";
 
-router.post("/saveSettings", isAuthenticated, saveSmtpSettings);
+router.get("/smtpSettings", isAuthenticated, getSmtpSettings);
+router.post("/smtpSettings", isAuthenticated, saveSmtpSettings);
 export default router;

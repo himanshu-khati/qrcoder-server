@@ -118,23 +118,24 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    res
-      .status(200)
-      .clearCookie("token", "", {
-        expires: new Date(0),
-        sameSite: process.env.NODE_ENV === "Develpoment" ? "lax" : "none",
-        secure: process.env.NODE_ENV === "Develpoment" ? false : true,
-      })
-      .json({
-        success: true,
-        message: `User logged out successfully`,
-      });
+    res.clearCookie("token", {
+      expires: new Date(0),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "Production", 
+      sameSite: "None", 
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
   } catch (error) {
-    return next(
-      new ErrorHandler(`Errror while logging out: ${error.message}`, 501)
-    );
+    return next(new ErrorHandler(`Error while logging out: ${error.message}`, 501));
   }
 };
+
+
+
 
 // myprofile
 export const myProfile = async (req, res, next) => {
